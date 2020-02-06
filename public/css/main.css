@@ -1,0 +1,7 @@
+span{
+	color: rgba(0, 0, 0, 0.5);
+}
+
+span:hover{
+	color: rgb(0,0,0);
+}
