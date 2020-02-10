@@ -96,13 +96,4 @@ class AuthController extends BaseController
 
         return response()->json(['logout' => 'success']);
     }
-
-    public function exitUser(Request $request){
-        if(isset($_COOKIE['username']) && ($_COOKIE['username'] == $request->username)){
-            setCookie('username', null, time()-(86400 * 30), "/");
-        }
-        
-        return response()->json(['exitUser' => 'success']);
-    }
-
 }
