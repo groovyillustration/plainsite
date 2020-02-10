@@ -74017,6 +74017,9 @@ function (_Component) {
           js_cookie__WEBPACK_IMPORTED_MODULE_10___default.a.remove('access_token', {
             path: '/'
           });
+          js_cookie__WEBPACK_IMPORTED_MODULE_10___default.a.remove('username', {
+            path: '/'
+          });
           window.location.replace('/login');
         }
       })["catch"](function (error) {
@@ -74409,10 +74412,13 @@ function (_Component) {
         password: this.state.password
       }).then(function (response) {
         var rtnData = response.data;
-        var accessToken = rtnData.access_token;
+        var accessToken = rtnData.accessToken;
 
         if (accessToken !== undefined) {
           js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.set('access_token', accessToken, {
+            path: '/'
+          });
+          js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.set('username', rtnData.email, {
             path: '/'
           });
           var userData = {

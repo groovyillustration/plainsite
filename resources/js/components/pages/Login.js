@@ -35,9 +35,10 @@ class Login extends Component {
 			password: this.state.password
 		}).then(response => {
 			let rtnData = response.data;
-			let accessToken = rtnData.access_token;
+			let accessToken = rtnData.accessToken;
 			if(accessToken !== undefined){
 				Cookies.set('access_token', accessToken, { path: '/' });
+				Cookies.set('username', rtnData.email, { path: '/' });
 				let userData = {
 					name: rtnData.name,
 					email: rtnData.email

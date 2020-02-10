@@ -21,6 +21,7 @@ Route::group(['middleware' => 'auth:api'], function(){
 	Route::get('getProducts', 'API\ProductController@index');
 	Route::post('removeProduct', 'API\ProductController@remove');
 	Route::post('logout', 'API\AuthController@logout');
+	Route::post('exitUser', 'API\AuthController@exitUser');
 });
 
 Route::middleware('auth:api')->group(

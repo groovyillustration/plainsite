@@ -68,7 +68,7 @@ class AuthController extends BaseController
             $result = [
                 'name' => json_decode((string) $user->getBody(), true)['name'],
                 'email' => json_decode((string) $user->getBody(), true)['email'],
-                'access_token' => $access_token
+                'accessToken' => $access_token
             ];
 
             return response()->json($result);
@@ -95,6 +95,14 @@ class AuthController extends BaseController
         });
 
         return response()->json(['logout' => 'success']);
+    }
+
+    public function exitUser(Request $request){
+        if(isset($_COOKIE['username']) && ($_COOKIE['username'] == $request->username)){
+            setCookie('username', null, time()-(86400 * 30), "/");
+        }
+        
+        return response()->json(['exitUser' => 'success']);
     }
 
 }

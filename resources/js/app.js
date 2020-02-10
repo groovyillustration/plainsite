@@ -15,6 +15,7 @@ require('./bootstrap');
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Router from './components/Router';
+
 var socket = io.connect('http://plainsite.com:8080');
 
 ReactDOM.render(<Router socket={socket}/>, document.getElementById('root'));

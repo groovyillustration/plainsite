@@ -53,6 +53,7 @@ class Router extends Component {
                     user: {}
                 });
                 Cookies.remove('access_token', { path: '/' });
+                Cookies.remove('username', { path: '/' });
                 window.location.replace('/login');
             }
         })
