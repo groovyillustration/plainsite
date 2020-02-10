@@ -15,11 +15,14 @@ class Router extends Component {
         super(props);
         this.state = {
             isLoggedIn: false,
-            user: {}
+            user: {},
+            loggedInUsers: []
         }
         this.handleLoggedInStat = this.handleLoggedInStat.bind(this);
         this.handleRedirectNotLoggedIn = this.handleRedirectNotLoggedIn.bind(this);
         this.handleLogOut = this.handleLogOut.bind(this);
+        this.handleLoggedInUsers = this.handleLoggedInUsers.bind(this);
+        this.handleLoggedInUsers();
     }
 
     handleLoggedInStat(data, historyObj){
@@ -29,6 +32,18 @@ class Router extends Component {
         });
         this.props.socket.emit('new-user', {email: data.email});
         historyObj.push('/products');
+    }
+
+    handleLoggedInUsers(){
+        var selfObj = this;
+        this.props.socket.on('loggedin-users', function(data){
+            console.log(data.loggedInUsers.length);
+            if(data.loggedInUsers.length > 0){
+                selfObj.setState({
+                    loggedInUsers: data.loggedInUsers
+                });
+            }
+        });
     }
 
     handleRedirectNotLoggedIn(isLoggedIn, historyObj){
@@ -63,6 +78,7 @@ class Router extends Component {
     }
 
     render() {
+        
         return (
             <BrowserRouter>
                 <div>
@@ -115,7 +131,7 @@ class Router extends Component {
                         </div>
                     </nav>
                     <Switch>
-                        <Route exact path='/home' component={Home} />
+                        <Route exact path='/home' render={props => (<Home {...props} loggedInUsers={this.state.loggedInUsers}/>)} />
                         <Route exact path='/products' render={props => (<Products {...props} socket={this.props.socket} username={this.state.user.name} isLoggedIn={this.state.isLoggedIn} handleRedirectNotLoggedIn={this.handleRedirectNotLoggedIn}/>)} />
                         <Route exact path='/about' component={About} />
                         <Route exact path='/contact' component={Contact} />

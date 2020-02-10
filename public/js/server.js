@@ -28,14 +28,23 @@ io.sockets.on( 'connection', function( client ) {
 			client.handshake.headers.cookie = "username="+data.email+expires+"; path=/";
 		}
 
-		console.log(Object.keys(io.sockets));
+		let loggedInUsers = Object.keys(io.sockets).filter(function(item){
+			return (item.indexOf('@') !== -1);
+		});
+
+		io.sockets.emit('loggedin-users', {loggedInUsers: loggedInUsers});
 	});
 
 	client.on('disconnect', function(){
 		/*var cookies = client.handshake.headers.cookie;*/
 		var username  = cookie.parse(client.handshake.headers.cookie).username;
 		delete io.sockets[username];
-		console.log(Object.keys(io.sockets));
+
+		let loggedInUsers = Object.keys(io.sockets).filter(function(item){
+			return (item.indexOf('@') !== -1);
+		});
+
+		io.sockets.emit('loggedin-users', {loggedInUsers: loggedInUsers});
 	});
 });
 
