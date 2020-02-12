@@ -51,9 +51,9 @@ class Router extends Component {
         }
     }
 
-    handleViewProduct(pId, historyObj){
+/*    handleViewProduct(pId, historyObj){
         historyObj.push('/products/'+pId);    
-    }
+    }*/
 
     handleLogOut(){
         let accessToken = Cookies.get('access_token');
@@ -135,7 +135,7 @@ class Router extends Component {
                     </nav>
                     <Switch>
                         <Route exact path='/home' render={props => (<Home {...props} loggedInUsers={this.state.loggedInUsers}/>)} />
-                        <Route exact path='/products' render={props => (<Products {...props} socket={this.props.socket} username={this.state.user.name} isLoggedIn={this.state.isLoggedIn} handleViewProduct={this.handleViewProduct} handleRedirectNotLoggedIn={this.handleRedirectNotLoggedIn}/>)} />
+                        <Route exact path='/products' render={props => (<Products {...props} socket={this.props.socket} username={this.state.user.name} isLoggedIn={this.state.isLoggedIn} handleRedirectNotLoggedIn={this.handleRedirectNotLoggedIn}/>)} />
                         <Route exact path='/products/:id' render={props => (<ProductDetail {...props} />)} />
                         <Route exact path='/about' component={About} />
                         <Route exact path='/contact' component={Contact} />

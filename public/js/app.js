@@ -73915,7 +73915,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var _pages_Home__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pages/Home */ "./resources/js/components/pages/Home.js");
 /* harmony import */ var _pages_Products__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pages/Products */ "./resources/js/components/pages/Products.js");
-/* harmony import */ var _pages_ProductDetail__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./pages/ProductDetail */ "./resources/js/components/pages/ProductDetail.js");
+/* harmony import */ var _pages_ProductDetail__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pages/ProductDetail */ "./resources/js/components/pages/ProductDetail.js");
 /* harmony import */ var _pages_About__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pages/About */ "./resources/js/components/pages/About.js");
 /* harmony import */ var _pages_Contact__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./pages/Contact */ "./resources/js/components/pages/Contact.js");
 /* harmony import */ var _pages_Login__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./pages/Login */ "./resources/js/components/pages/Login.js");
@@ -74014,11 +74014,10 @@ function (_Component) {
         historyObj.push('/login');
       }
     }
-  }, {
-    key: "handleViewProduct",
-    value: function handleViewProduct(pId, historyObj) {
-      historyObj.push('/products/' + pId);
-    }
+    /*    handleViewProduct(pId, historyObj){
+            historyObj.push('/products/'+pId);    
+        }*/
+
   }, {
     key: "handleLogOut",
     value: function handleLogOut() {
@@ -74143,7 +74142,6 @@ function (_Component) {
             socket: _this3.props.socket,
             username: _this3.state.user.name,
             isLoggedIn: _this3.state.isLoggedIn,
-            handleViewProduct: _this3.handleViewProduct,
             handleRedirectNotLoggedIn: _this3.handleRedirectNotLoggedIn
           }));
         }
@@ -74151,7 +74149,7 @@ function (_Component) {
         exact: true,
         path: "/products/:id",
         render: function render(props) {
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_pages_ProductDetail__WEBPACK_IMPORTED_MODULE_12__["default"], props);
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_pages_ProductDetail__WEBPACK_IMPORTED_MODULE_4__["default"], props);
         }
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
         exact: true,
@@ -74651,6 +74649,11 @@ function (_Component) {
   }
 
   _createClass(Product, [{
+    key: "handleViewProduct",
+    value: function handleViewProduct(pId) {
+      this.props.history.push('/products/' + pId);
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this = this;
@@ -74665,7 +74668,7 @@ function (_Component) {
         type: "button",
         className: "btn btn-primary",
         onClick: function onClick() {
-          _this.props.handleViewProduct(_this.props.item.id, _this.props.history);
+          _this.handleViewProduct(_this.props.item.id);
         }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         className: "fa fa-eye",
@@ -75046,7 +75049,6 @@ function (_Component) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Product__WEBPACK_IMPORTED_MODULE_3__["default"], {
           item: product,
           history: _this4.props.history,
-          handleViewProduct: _this4.props.handleViewProduct,
           handleRemove: _this4.handleRemove,
           key: product.id
         });
