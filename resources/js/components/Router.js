@@ -37,7 +37,6 @@ class Router extends Component {
     handleLoggedInUsers(){
         var selfObj = this;
         this.props.socket.on('loggedin-users', function(data){
-            console.log(data.loggedInUsers.length);
             if(data.loggedInUsers.length > 0){
                 selfObj.setState({
                     loggedInUsers: data.loggedInUsers

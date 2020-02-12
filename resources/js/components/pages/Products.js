@@ -8,20 +8,48 @@ class Products extends Component {
 		super(props);
 		this.props.handleRedirectNotLoggedIn(this.props.isLoggedIn, this.props.history);
 		this.state = {
-			products: []
+			products: [],
+			search: '',
+			fetching: false
 		};
 
 		this.fetchProducts = this.fetchProducts.bind(this);
 		this.handleRemove = this.handleRemove.bind(this);
 		this.broadCastingListener = this.broadCastingListener.bind(this);
-		this.broadCastingListener();
+		this.filterProducts = this.filterProducts.bind(this);
+		this.scrollHandler = this.scrollHandler.bind(this);
+		this.scrollHandler();
 	}
 
 
 	componentDidMount(){
 		if(this.props.isLoggedIn){
-			this.fetchProducts();
+			this.fetchProducts('', '');
 		}
+	}
+
+	scrollHandler(){
+		let self = this;
+        $(window).scroll(function(){
+            if(($(window).scrollTop() + $(window).height() == $(document).height()) && (self.state.fetching === false)){
+                if(self.state.products.length > 0){
+	                self.setState({
+	                	fetching: true
+	                });
+
+                	let lastData = self.state.products[self.state.products.length-1];
+                	self.fetchProducts(self.state.search, lastData.id);
+                }
+            }
+        });
+	}
+
+	filterProducts(event){
+		let keyPhrase = event.target.value;
+		this.setState({
+			search: keyPhrase
+		});
+		this.fetchProducts(keyPhrase, '');
 	}
 
 	broadCastingListener(){
@@ -33,19 +61,25 @@ class Products extends Component {
 		});
 	}
 
-	fetchProducts(){
+	fetchProducts(keyword, lastId){
 		let accesToken = Cookies.get('access_token');
 		if(accesToken !== undefined){
-			axios.get('/api/getProducts', {
+			axios.get('/api/getProducts?keyword='+keyword+'&lastId='+lastId, {
 				headers: {
 					'Content-Type': 'application/json',
 					'Authorization': 'Bearer '+accesToken
 				}
 			})
 			.then(response => {
-				this.setState({
-					products: response.data
-				});
+				let stateData = {
+					products: (lastId > 0) ? this.state.products.concat(response.data) : response.data
+				};
+
+				if(this.state.fetching === true){
+					stateData['fetching'] = false;
+				}
+
+				this.setState(stateData);
 			})
 			.catch(error => {
 				console.log(error.response);
@@ -79,10 +113,15 @@ class Products extends Component {
 		return (
 		    <div className="container">
 		    	<div className="row">
-		    		<div className="col-md-10"><h2>Products</h2></div>
-		    		<div className="col-md-2"></div>
+		    		<div className="col-md-12"><h2>Products</h2></div>
 		    	</div>
 		      
+                <div className="form-group row">
+                    <div className="col-md-12">
+                        <input type="text" className="form-control" id="product_detail_search" name="product_detail_search" onChange={this.filterProducts} placeholder="Search..." value={this.state.search}/>
+                    </div>
+                </div>
+
 		      <table className="table">
 		      	<thead>
 		      		<tr>
@@ -92,7 +131,7 @@ class Products extends Component {
 		      			<th>Action</th>
 		      		</tr>
 		      	</thead>
-		      	<tbody>{this.state.products.map(product => { return <Product item={product} handleRemove={this.handleRemove} key={product.id}/>})}</tbody>
+		      	<tbody id="product_wrap">{this.state.products.map(product => { return <Product item={product} handleRemove={this.handleRemove} key={product.id}/>})}</tbody>
 		      </table>
 		    </div>
 		);

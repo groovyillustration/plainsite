@@ -73999,8 +73999,6 @@ function (_Component) {
     value: function handleLoggedInUsers() {
       var selfObj = this;
       this.props.socket.on('loggedin-users', function (data) {
-        console.log(data.loggedInUsers.length);
-
         if (data.loggedInUsers.length > 0) {
           selfObj.setState({
             loggedInUsers: data.loggedInUsers
@@ -74719,13 +74717,17 @@ function (_Component) {
     _this.props.handleRedirectNotLoggedIn(_this.props.isLoggedIn, _this.props.history);
 
     _this.state = {
-      products: []
+      products: [],
+      search: '',
+      fetching: false
     };
     _this.fetchProducts = _this.fetchProducts.bind(_assertThisInitialized(_this));
     _this.handleRemove = _this.handleRemove.bind(_assertThisInitialized(_this));
     _this.broadCastingListener = _this.broadCastingListener.bind(_assertThisInitialized(_this));
+    _this.filterProducts = _this.filterProducts.bind(_assertThisInitialized(_this));
+    _this.scrollHandler = _this.scrollHandler.bind(_assertThisInitialized(_this));
 
-    _this.broadCastingListener();
+    _this.scrollHandler();
 
     return _this;
   }
@@ -74734,8 +74736,33 @@ function (_Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       if (this.props.isLoggedIn) {
-        this.fetchProducts();
+        this.fetchProducts('', '');
       }
+    }
+  }, {
+    key: "scrollHandler",
+    value: function scrollHandler() {
+      var self = this;
+      $(window).scroll(function () {
+        if ($(window).scrollTop() + $(window).height() == $(document).height() && self.state.fetching === false) {
+          if (self.state.products.length > 0) {
+            self.setState({
+              fetching: true
+            });
+            var lastData = self.state.products[self.state.products.length - 1];
+            self.fetchProducts(self.state.search, lastData.id);
+          }
+        }
+      });
+    }
+  }, {
+    key: "filterProducts",
+    value: function filterProducts(event) {
+      var keyPhrase = event.target.value;
+      this.setState({
+        search: keyPhrase
+      });
+      this.fetchProducts(keyPhrase, '');
     }
   }, {
     key: "broadCastingListener",
@@ -74749,21 +74776,27 @@ function (_Component) {
     }
   }, {
     key: "fetchProducts",
-    value: function fetchProducts() {
+    value: function fetchProducts(keyword, lastId) {
       var _this2 = this;
 
       var accesToken = js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.get('access_token');
 
       if (accesToken !== undefined) {
-        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/getProducts', {
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/getProducts?keyword=' + keyword + '&lastId=' + lastId, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + accesToken
           }
         }).then(function (response) {
-          _this2.setState({
-            products: response.data
-          });
+          var stateData = {
+            products: lastId > 0 ? _this2.state.products.concat(response.data) : response.data
+          };
+
+          if (_this2.state.fetching === true) {
+            stateData['fetching'] = false;
+          }
+
+          _this2.setState(stateData);
         })["catch"](function (error) {
           console.log(error.response);
         });
@@ -74804,12 +74837,24 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-md-10"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Products")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-md-2"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+        className: "col-md-12"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Products"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-md-12"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control",
+        id: "product_detail_search",
+        name: "product_detail_search",
+        onChange: this.filterProducts,
+        placeholder: "Search...",
+        value: this.state.search
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
         className: "table"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Detail"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Created At"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Action"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, this.state.products.map(function (product) {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Detail"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Created At"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Action"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", {
+        id: "product_wrap"
+      }, this.state.products.map(function (product) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Product__WEBPACK_IMPORTED_MODULE_3__["default"], {
           item: product,
           handleRemove: _this4.handleRemove,
