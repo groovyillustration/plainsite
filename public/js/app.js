@@ -74668,7 +74668,7 @@ function (_Component) {
         "aria-label": "actions"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "button",
-        className: "btn btn-primary",
+        className: "btn btn-dark view",
         onClick: function onClick() {
           _this.handleViewProduct(_this.props.item.id);
         }
@@ -74677,7 +74677,7 @@ function (_Component) {
         "aria-hidden": "true"
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "button",
-        className: "btn btn-secondary",
+        className: "btn btn-dark remove",
         onClick: function onClick() {
           _this.props.handleRemove(_this.props.item);
         }
