@@ -131,7 +131,7 @@ class Products extends Component {
 		      			<th>Action</th>
 		      		</tr>
 		      	</thead>
-		      	<tbody id="product_wrap">{this.state.products.map(product => { return <Product item={product} handleRemove={this.handleRemove} key={product.id}/>})}</tbody>
+		      	<tbody id="product_wrap">{this.state.products.map(product => { return <Product item={product} history={this.props.history} handleViewProduct={this.props.handleViewProduct} handleRemove={this.handleRemove} key={product.id}/>})}</tbody>
 		      </table>
 		    </div>
 		);

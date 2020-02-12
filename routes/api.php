@@ -19,6 +19,8 @@ Route::post('login', 'API\AuthController@login');
 Route::group(['middleware' => 'auth:api'], function(){
 	Route::get('getUser', 'API\AuthController@getUser');
 	Route::get('getProducts', 'API\ProductController@index');
+	Route::get('getProduct/{id}', 'API\ProductController@getProduct');
+	Route::post('products/{id}/update', 'API\ProductController@updateProduct');
 	Route::post('removeProduct', 'API\ProductController@remove');
 	Route::post('logout', 'API\AuthController@logout');
 });

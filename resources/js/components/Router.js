@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Products from './pages/Products';
+import ProductDetail from './pages/ProductDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
@@ -19,7 +20,6 @@ class Router extends Component {
             loggedInUsers: []
         }
         this.handleLoggedInStat = this.handleLoggedInStat.bind(this);
-        this.handleRedirectNotLoggedIn = this.handleRedirectNotLoggedIn.bind(this);
         this.handleLogOut = this.handleLogOut.bind(this);
         this.handleLoggedInUsers = this.handleLoggedInUsers.bind(this);
         this.handleLoggedInUsers();
@@ -49,6 +49,10 @@ class Router extends Component {
         if(!isLoggedIn){
             historyObj.push('/login');
         }
+    }
+
+    handleViewProduct(pId, historyObj){
+        historyObj.push('/products/'+pId);    
     }
 
     handleLogOut(){
@@ -131,7 +135,8 @@ class Router extends Component {
                     </nav>
                     <Switch>
                         <Route exact path='/home' render={props => (<Home {...props} loggedInUsers={this.state.loggedInUsers}/>)} />
-                        <Route exact path='/products' render={props => (<Products {...props} socket={this.props.socket} username={this.state.user.name} isLoggedIn={this.state.isLoggedIn} handleRedirectNotLoggedIn={this.handleRedirectNotLoggedIn}/>)} />
+                        <Route exact path='/products' render={props => (<Products {...props} socket={this.props.socket} username={this.state.user.name} isLoggedIn={this.state.isLoggedIn} handleViewProduct={this.handleViewProduct} handleRedirectNotLoggedIn={this.handleRedirectNotLoggedIn}/>)} />
+                        <Route exact path='/products/:id' render={props => (<ProductDetail {...props} />)} />
                         <Route exact path='/about' component={About} />
                         <Route exact path='/contact' component={Contact} />
                         <Route exact path='/login' render={props => (<Login {...props} handleLoggedInStat={this.handleLoggedInStat} />)} />

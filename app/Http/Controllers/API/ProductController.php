@@ -30,6 +30,32 @@ class ProductController extends BaseController
     	return response()->json($products);
     }
 
+    public function getProduct($id){
+    	$product = Product::where('id', $id)->first();
+
+    	return response()->json($product);
+    }
+
+    public function updateProduct(Request $request, $id){
+    	$product = Product::where('id', $id)->first();
+    	$upd = false;
+    	if(isset($request->name) && ($product->name != $request->name)){
+    		$product->name = $request->name;
+    		$upd = true;
+    	}
+
+    	if(isset($request->detail) && ($product->detail != $request->detail)){
+    		$product->detail = $request->detail;
+    		$upd = true;
+    	}
+
+    	if($upd){
+    		$product->save();
+    	}
+
+    	return response()->json($product);
+    }
+
     public function remove(Request $request){
     	$product = Product::find($request->prod_id);
     	Product::find($request->prod_id)->delete();
