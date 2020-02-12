@@ -74149,7 +74149,9 @@ function (_Component) {
         exact: true,
         path: "/products/:id",
         render: function render(props) {
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_pages_ProductDetail__WEBPACK_IMPORTED_MODULE_4__["default"], props);
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_pages_ProductDetail__WEBPACK_IMPORTED_MODULE_4__["default"], _extends({}, props, {
+            isLoggedIn: _this3.state.isLoggedIn
+          }));
         }
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
         exact: true,
@@ -74754,20 +74756,24 @@ function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var accesToken = js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.get('access_token');
-      var pId = this.props.location.pathname.replace('/products/', '');
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/getProduct/' + pId, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + accesToken
-        }
-      }).then(function (response) {
-        _this2.setState({
-          product: response.data
+      if (this.props.isLoggedIn) {
+        var accesToken = js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.get('access_token');
+        var pId = this.props.location.pathname.replace('/products/', '');
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/getProduct/' + pId, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accesToken
+          }
+        }).then(function (response) {
+          _this2.setState({
+            product: response.data
+          });
+        })["catch"](function (error) {
+          console.log(error.response);
         });
-      })["catch"](function (error) {
-        console.log(error.response);
-      });
+      } else {
+        this.props.history.push('/login');
+      }
     }
   }, {
     key: "nameHandler",

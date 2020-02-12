@@ -14,22 +14,26 @@ class ProductDetail extends Component {
 	}
 
 	componentDidMount(){
-		let accesToken = Cookies.get('access_token');
-		let pId = this.props.location.pathname.replace('/products/', '');
-		axios.get('/api/getProduct/'+pId, {
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Bearer '+accesToken
-			}
-		})
-		.then(response => {
-			this.setState({
-				product: response.data
+		if(this.props.isLoggedIn){
+			let accesToken = Cookies.get('access_token');
+			let pId = this.props.location.pathname.replace('/products/', '');
+			axios.get('/api/getProduct/'+pId, {
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer '+accesToken
+				}
+			})
+			.then(response => {
+				this.setState({
+					product: response.data
+				});
+			})
+			.catch(error => {
+				console.log(error.response);
 			});
-		})
-		.catch(error => {
-			console.log(error.response);
-		});
+		}else{
+			this.props.history.push('/login');
+		}
 	}
 
 	nameHandler(event){

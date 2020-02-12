@@ -136,7 +136,7 @@ class Router extends Component {
                     <Switch>
                         <Route exact path='/home' render={props => (<Home {...props} loggedInUsers={this.state.loggedInUsers}/>)} />
                         <Route exact path='/products' render={props => (<Products {...props} socket={this.props.socket} username={this.state.user.name} isLoggedIn={this.state.isLoggedIn} handleRedirectNotLoggedIn={this.handleRedirectNotLoggedIn}/>)} />
-                        <Route exact path='/products/:id' render={props => (<ProductDetail {...props} />)} />
+                        <Route exact path='/products/:id' render={props => (<ProductDetail {...props} isLoggedIn={this.state.isLoggedIn} />)} />
                         <Route exact path='/about' component={About} />
                         <Route exact path='/contact' component={Contact} />
                         <Route exact path='/login' render={props => (<Login {...props} handleLoggedInStat={this.handleLoggedInStat} />)} />
