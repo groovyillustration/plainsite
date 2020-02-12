@@ -18,6 +18,7 @@ class Products extends Component {
 		this.broadCastingListener = this.broadCastingListener.bind(this);
 		this.filterProducts = this.filterProducts.bind(this);
 		this.scrollHandler = this.scrollHandler.bind(this);
+		this.broadCastingListener();
 		this.scrollHandler();
 	}
 
@@ -54,9 +55,33 @@ class Products extends Component {
 
 	broadCastingListener(){
 		var username = this.props.username;
+		var self = this;
 		this.props.socket.on('product', function(data){
 			if((username !== undefined) && (username !== data.pusher)){
-				document.getElementById('row_'+data.product.id).remove();
+				console.log(data.action);
+				if(data.action == 'delete'){
+					document.getElementById('row_'+data.product.id).remove();
+				}
+
+				if(data.action == 'update'){
+					var prodId = data.product.id;
+					var prodName = data.product.name;
+					var prodDetail = data.product.detail;
+					self.setState(prevState => {
+						let newProds = prevState.products.map(function(prod){
+							if(prod.id === prodId){
+								prod.name = prodName;
+								prod.detail = prodDetail;
+							}
+
+							return prod;
+						});
+
+						return {
+							products: newProds
+						};
+					});
+				}
 			}
 		});
 	}
@@ -101,7 +126,7 @@ class Products extends Component {
 		.then(response => {		
 			let key = response.data.id;
 			document.getElementById('row_'+key).remove();
-			this.props.socket.emit('product', {product: response.data, pusher: this.props.username});
+			this.props.socket.emit('product', {product: response.data, pusher: this.props.username, action: 'delete'});
 		})
 		.catch(error => {
 			console.log(error.response);

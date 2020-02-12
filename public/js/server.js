@@ -13,7 +13,7 @@ io.sockets.on( 'connection', function( client ) {
 	
 
 	client.on('product', function(data){
-		io.sockets.emit('product', {product: data.product, pusher: data.pusher});
+		io.sockets.emit('product', {product: data.product, pusher: data.pusher, action: data.action});
 	});
 
 	client.on('new-user', function(data){

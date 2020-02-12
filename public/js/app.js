@@ -74150,6 +74150,8 @@ function (_Component) {
         path: "/products/:id",
         render: function render(props) {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_pages_ProductDetail__WEBPACK_IMPORTED_MODULE_4__["default"], _extends({}, props, {
+            socket: _this3.props.socket,
+            username: _this3.state.user.name,
             isLoggedIn: _this3.state.isLoggedIn
           }));
         }
@@ -74814,6 +74816,12 @@ function (_Component) {
           }
         }).then(function (response) {
           console.log(response.data);
+
+          _this3.props.socket.emit('product', {
+            product: response.data,
+            pusher: _this3.props.username,
+            action: 'update'
+          });
         })["catch"](function (error) {
           console.log(error.response);
         });
@@ -74924,6 +74932,8 @@ function (_Component) {
     _this.filterProducts = _this.filterProducts.bind(_assertThisInitialized(_this));
     _this.scrollHandler = _this.scrollHandler.bind(_assertThisInitialized(_this));
 
+    _this.broadCastingListener();
+
     _this.scrollHandler();
 
     return _this;
@@ -74965,9 +74975,33 @@ function (_Component) {
     key: "broadCastingListener",
     value: function broadCastingListener() {
       var username = this.props.username;
+      var self = this;
       this.props.socket.on('product', function (data) {
         if (username !== undefined && username !== data.pusher) {
-          document.getElementById('row_' + data.product.id).remove();
+          console.log(data.action);
+
+          if (data.action == 'delete') {
+            document.getElementById('row_' + data.product.id).remove();
+          }
+
+          if (data.action == 'update') {
+            var prodId = data.product.id;
+            var prodName = data.product.name;
+            var prodDetail = data.product.detail;
+            self.setState(function (prevState) {
+              var newProds = prevState.products.map(function (prod) {
+                if (prod.id === prodId) {
+                  prod.name = prodName;
+                  prod.detail = prodDetail;
+                }
+
+                return prod;
+              });
+              return {
+                products: newProds
+              };
+            });
+          }
         }
       });
     }
@@ -75018,7 +75052,8 @@ function (_Component) {
 
         _this3.props.socket.emit('product', {
           product: response.data,
-          pusher: _this3.props.username
+          pusher: _this3.props.username,
+          action: 'delete'
         });
       })["catch"](function (error) {
         console.log(error.response);

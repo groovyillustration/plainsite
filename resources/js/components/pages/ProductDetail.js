@@ -69,6 +69,7 @@ class ProductDetail extends Component {
 			})
 			.then(response => {
 				console.log(response.data);
+				this.props.socket.emit('product', {product: response.data, pusher: this.props.username, action: 'update'});
 			})
 			.catch(error => {
 				console.log(error.response);
